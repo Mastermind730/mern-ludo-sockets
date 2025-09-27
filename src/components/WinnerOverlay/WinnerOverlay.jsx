@@ -2,10 +2,14 @@ import React from 'react';
 import styles from './WinnerOverlay.module.css';
 import trophyImage from '../../images/trophy.webp';
 
-const WinnerOverlay = ({ winner, scoringData, players, onPlayAgain }) => {
-    if (!winner || !scoringData) return null;
+const WinnerOverlay = ({ winner, players, onPlayAgain, finalScores }) => {
+    if (!winner) return null;
 
-    const { playerScores, captureCount } = scoringData;
+    // Use final scores from backend or default values
+    const {
+        playerScores = { red: 0, blue: 0, green: 0, yellow: 0 },
+        captureCount = { red: 0, blue: 0, green: 0, yellow: 0 },
+    } = finalScores || {};
 
     // Sort players by score for leaderboard
     const sortedPlayers = players

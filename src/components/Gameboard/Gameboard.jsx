@@ -7,7 +7,7 @@ import useTimerMonitor from '../../hooks/useTimerMonitor';
 import Map from './Map/Map';
 import Navbar from '../Navbar/Navbar';
 import Overlay from '../Overlay/Overlay';
-import ScoreDisplay from '../ScoreDisplay/ScoreDisplay';
+import LiveScoreboard from '../LiveScoreboard/LiveScoreboard';
 import WinnerOverlay from '../WinnerOverlay/WinnerOverlay';
 
 const Gameboard = () => {
@@ -25,6 +25,7 @@ const Gameboard = () => {
     const [movingPlayer, setMovingPlayer] = useState('red');
 
     const [winner, setWinner] = useState(null);
+    const [finalScores, setFinalScores] = useState(null);
 
     // Initialize scoring system
     const scoringData = useScoringSystem(pawns, socket, context);
@@ -67,6 +68,14 @@ const Gameboard = () => {
         socket.on('game:timer-end', data => {
             // Handle timer-based game end with score winner
             setWinner(data.winner);
+            if (data.finalScores) {
+                setFinalScores(data.finalScores);
+            }
+        });
+
+        // Listen for final score updates
+        socket.on('game:final-scores', data => {
+            setFinalScores(data);
         });
         socket.on('redirect', () => {
             window.location.reload();
@@ -89,14 +98,7 @@ const Gameboard = () => {
                         scoringData={scoringData}
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} scoringData={scoringData} />
-                    {started && (
-                        <ScoreDisplay
-                            scoringData={scoringData}
-                            players={players}
-                            currentPlayerColor={context.color}
-                            pawns={pawns}
-                        />
-                    )}
+                    {started && <LiveScoreboard players={players} />}
                 </div>
             ) : (
                 <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />
@@ -105,8 +107,8 @@ const Gameboard = () => {
                 <Overlay>
                     <WinnerOverlay
                         winner={winner}
-                        scoringData={scoringData}
                         players={players}
+                        finalScores={finalScores}
                         onPlayAgain={() => socket.emit('player:exit')}
                     />
                 </Overlay>

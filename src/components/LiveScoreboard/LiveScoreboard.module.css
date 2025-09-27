@@ -1,0 +1,190 @@
+.scoreboard {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    border-radius: 12px;
+    border: 2px solid #333;
+    min-width: 240px;
+    max-width: 280px;
+    z-index: 100;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.header {
+    background: linear-gradient(135deg, #4a5568, #2d3748);
+    color: #ffd700;
+    padding: 12px 16px;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 1px solid #4a5568;
+    text-align: center;
+}
+
+.header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.scoreList {
+    padding: 8px;
+}
+
+.playerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin: 4px 0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.playerRow:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(2px);
+}
+
+.playerRow.leader {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+
+.playerInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.colorIndicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.playerName {
+    font-weight: 600;
+    font-size: 14px;
+    color: #e2e8f0;
+}
+
+.scoreInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.mainScore {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.scoreValue {
+    font-weight: bold;
+    font-size: 18px;
+    color: #ffd700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.scoreLabel {
+    font-size: 11px;
+    color: #a0aec0;
+    font-weight: 500;
+}
+
+.captures {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(255, 107, 107, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.captureIcon {
+    font-size: 10px;
+}
+
+.captureCount {
+    font-size: 11px;
+    font-weight: 600;
+    color: #ff6b6b;
+}
+
+.footer {
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 10px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.footer small {
+    color: #a0aec0;
+    font-size: 10px;
+    font-style: italic;
+}
+
+/* Color-specific borders for players */
+.playerRow.red {
+    border-left: 4px solid #e53e3e;
+}
+
+.playerRow.blue {
+    border-left: 4px solid #3182ce;
+}
+
+.playerRow.green {
+    border-left: 4px solid #38a169;
+}
+
+.playerRow.yellow {
+    border-left: 4px solid #d69e2e;
+}
+
+/* Animation for score updates */
+@keyframes scoreUpdate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.scoreValue {
+    animation: scoreUpdate 0.3s ease-in-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .scoreboard {
+        top: 10px;
+        left: 10px;
+        min-width: 200px;
+        max-width: 220px;
+    }
+
+    .playerName {
+        font-size: 12px;
+    }
+
+    .scoreValue {
+        font-size: 16px;
+    }
+}

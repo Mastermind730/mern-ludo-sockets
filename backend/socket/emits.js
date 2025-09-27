@@ -20,10 +20,20 @@ const sendWinner = (id, winner) => {
     socketManager.getIO().to(id).emit('game:winner', winner);
 };
 
+const sendScoreUpdate = (roomId, scoreData) => {
+    socketManager.getIO().to(roomId).emit('game:scores', JSON.stringify(scoreData));
+};
+
+const sendFinalScores = (roomId, finalScores) => {
+    socketManager.getIO().to(roomId).emit('game:final-scores', JSON.stringify(finalScores));
+};
+
 module.exports = {
     sendToPlayersData,
     sendToPlayersRolledNumber,
     sendToOnePlayerData,
     sendToOnePlayerRooms,
     sendWinner,
+    sendScoreUpdate,
+    sendFinalScores,
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { SocketContext } from '../../App';
 import styles from './LiveScoreboard.module.css';
 
-const LiveScoreboard = ({ players }) => {
+const LiveScoreboard = ({ players, roomData }) => {
     const socket = useContext(SocketContext);
     const [scores, setScores] = useState({
         playerScores: { red: 0, blue: 0, green: 0, yellow: 0 },
@@ -28,6 +28,31 @@ const LiveScoreboard = ({ players }) => {
             socket.off('game:scores', handleScoreUpdate);
         };
     }, [socket]);
+
+    // Calculate scores from room data as fallback when backend events aren't working
+    useEffect(() => {
+        if (!roomData || !roomData.pawns) return;
+
+        const colors = ['red', 'blue', 'green', 'yellow'];
+        const newPlayerScores = {};
+        let newCaptureCount = { red: 0, blue: 0, green: 0, yellow: 0 };
+
+        colors.forEach(color => {
+            const playerPawns = roomData.pawns.filter(pawn => pawn.color === color);
+            newPlayerScores[color] = playerPawns.reduce((sum, pawn) => sum + (pawn.score || 0), 0);
+        });
+
+        // Use room data capture count if available
+        if (roomData.captureCount) {
+            newCaptureCount = { ...roomData.captureCount };
+        }
+
+        setScores(prevScores => ({
+            ...prevScores,
+            playerScores: newPlayerScores,
+            captureCount: newCaptureCount,
+        }));
+    }, [roomData]);
 
     const getPlayerName = color => {
         const player = players.find(p => p.color === color);

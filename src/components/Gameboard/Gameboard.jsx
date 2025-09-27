@@ -26,6 +26,7 @@ const Gameboard = () => {
 
     const [winner, setWinner] = useState(null);
     const [finalScores, setFinalScores] = useState(null);
+    const [roomData, setRoomData] = useState(null);
 
     // Initialize scoring system
     const scoringData = useScoringSystem(pawns, socket, context);
@@ -59,6 +60,7 @@ const Gameboard = () => {
             setPawns(data.pawns);
             setTime(data.nextMoveTime);
             setStarted(data.started);
+            setRoomData(data);
         });
 
         socket.on('game:winner', winner => {
@@ -98,7 +100,7 @@ const Gameboard = () => {
                         scoringData={scoringData}
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} scoringData={scoringData} />
-                    {started && <LiveScoreboard players={players} />}
+                    {started && <LiveScoreboard players={players} roomData={roomData} />}
                 </div>
             ) : (
                 <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />

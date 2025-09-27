@@ -2,6 +2,7 @@ import React, { useEffect, useState, createContext } from 'react';
 import { io } from 'socket.io-client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ReactLoading from 'react-loading';
+import { ScoringProvider } from './contexts/ScoringContext';
 import Gameboard from './components/Gameboard/Gameboard';
 import LoginPage from './components/LoginPage/LoginPage';
 
@@ -59,7 +60,9 @@ function App() {
                             if (playerData) {
                                 return (
                                     <PlayerDataContext.Provider value={playerData}>
-                                        <Gameboard />
+                                        <ScoringProvider>
+                                            <Gameboard />
+                                        </ScoringProvider>
                                     </PlayerDataContext.Provider>
                                 );
                             } else {

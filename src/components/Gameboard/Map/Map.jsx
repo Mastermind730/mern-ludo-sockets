@@ -15,6 +15,10 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const [hintPawn, setHintPawn] = useState();
 
     const paintPawn = (context, pawn) => {
+        if (!pawn || pawn.position === undefined || !positionMapCoords[pawn.position]) {
+            return null;
+        }
+
         const { x, y } = positionMapCoords[pawn.position];
         const touchableArea = new Path2D();
         touchableArea.arc(x, y, 12, 0, 2 * Math.PI);
@@ -28,12 +32,15 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
 
     const handleCanvasClick = event => {
         const canvas = canvasRef.current;
+        if (!canvas) return;
+
         const ctx = canvas.getContext('2d');
-        const rect = canvas.getBoundingClientRect(),
-            cursorX = event.clientX - rect.left,
-            cursorY = event.clientY - rect.top;
+        const rect = canvas.getBoundingClientRect();
+        const cursorX = Math.round(event.clientX - rect.left);
+        const cursorY = Math.round(event.clientY - rect.top);
+
         for (const pawn of pawns) {
-            if (ctx.isPointInPath(pawn.touchableArea, cursorX, cursorY)) {
+            if (pawn.touchableArea && ctx.isPointInPath(pawn.touchableArea, cursorX, cursorY)) {
                 if (canPawnMove(pawn, rolledNumber)) socket.emit('game:move', pawn._id);
             }
         }
@@ -43,13 +50,17 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const handleMouseMove = event => {
         if (!nowMoving || !rolledNumber) return;
         const canvas = canvasRef.current;
+        if (!canvas) return;
+
         const ctx = canvas.getContext('2d');
-        const rect = canvas.getBoundingClientRect(),
-            x = event.clientX - rect.left,
-            y = event.clientY - rect.top;
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.round(event.clientX - rect.left);
+        const y = Math.round(event.clientY - rect.top);
+
         canvas.style.cursor = 'default';
         for (const pawn of pawns) {
             if (
+                pawn.touchableArea &&
                 ctx.isPointInPath(pawn.touchableArea, x, y) &&
                 player.color === pawn.color &&
                 canPawnMove(pawn, rolledNumber)
@@ -69,13 +80,20 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     useEffect(() => {
         const rerenderCanvas = () => {
             const canvas = canvasRef.current;
+            if (!canvas || !pawns || pawns.length === 0) return;
+
             const ctx = canvas.getContext('2d');
             const image = new Image();
             image.src = mapImage;
             image.onload = function () {
                 ctx.drawImage(image, 0, 0);
                 pawns.forEach((pawn, index) => {
-                    pawns[index].touchableArea = paintPawn(ctx, pawn);
+                    if (pawn && pawn.position !== undefined) {
+                        const touchableArea = paintPawn(ctx, pawn);
+                        if (touchableArea) {
+                            pawns[index].touchableArea = touchableArea;
+                        }
+                    }
                 });
                 if (hintPawn) {
                     paintPawn(ctx, hintPawn);
